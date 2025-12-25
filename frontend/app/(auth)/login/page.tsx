@@ -1,0 +1,32 @@
+"use client";
+import { Button, Card, Input } from "antd";
+import { useState } from "react";
+import { login } from "@/services/auth";
+import { useRouter } from "next/navigation";
+
+export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter();
+
+  const handleLogin = async () => {
+    await login(email, password);
+    router.push("/dashboard");
+  };
+
+  return (
+    <div className="flex justify-center items-center h-screen">
+      <Card title="Login" className="w-96">
+        <Input placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
+        <Input.Password
+          placeholder="Password"
+          className="mt-2"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <Button type="primary" block className="mt-4" onClick={handleLogin}>
+          Login
+        </Button>
+      </Card>
+    </div>
+  );
+}

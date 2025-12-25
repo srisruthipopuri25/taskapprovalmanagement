@@ -9,12 +9,18 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "antd": "^6.1.2",
+    "axios": "^1.13.2",
+    "dayjs": "^1.11.19",
+    "lodash": "^4.17.21",
     "next": "16.1.1",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "zustand": "^5.0.9"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/lodash.merge": "^4.6.9",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Ant Design CSS reset (important for SSR) */
+@import "antd/dist/reset.css";
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
