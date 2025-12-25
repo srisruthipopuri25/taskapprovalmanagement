@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   frontend:
     build:
@@ -8,42 +6,33 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=http://backend:8000  # Example: backend service
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://backend:8000
     depends_on:
       - backend
-    networks:
-      - app-network
 
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    build: ./backend
     ports:
       - "8000:8000"
-    environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/taskdb
+    env_file:
+      - .env
     depends_on:
-      - db
-    networks:
-      - app-network
+      - mysql
 
-  db:
-    image: postgres:15-alpine
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_dev
+    restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: taskdb
-    volumes:
-      - db_data:/var/lib/postgresql/data
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: task_db
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: strongpassword
     ports:
-      - "5432:5432"
-    networks:
-      - app-network
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
 
 volumes:
-  db_data:
-
-networks:
-  app-network:
-    driver: bridge
+  mysql_data:
