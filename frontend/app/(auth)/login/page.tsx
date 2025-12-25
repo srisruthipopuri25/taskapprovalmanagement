@@ -10,8 +10,12 @@ export default function LoginPage() {
   const router = useRouter();
 
   const handleLogin = async () => {
-    await login(email, password);
-    router.push("/dashboard");
+    try {
+      await login(email, password);
+      router.push("/dashboard");
+    } catch (err) {
+      alert("Invalid email or password");
+    }
   };
 
   return (
