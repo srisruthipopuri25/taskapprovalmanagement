@@ -20,6 +20,7 @@ app.add_middleware(
 )
 
 # models
+# Base.metadata.drop_all(bind=engine)  # ⚠ drops all tables
 Base.metadata.create_all(bind=engine)
 
 # routes

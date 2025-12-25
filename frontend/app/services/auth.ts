@@ -4,9 +4,9 @@ export const login = async (email: string, password: string) => {
   try {
     const res = await api.post("/auth/login", { email, password });
 
-    document.cookie = `token=${res.data.access_token}; path=/; SameSite=Strict`;
+    localStorage.setItem("token", res.data.access_token);
 
-    return res.data; 
+    return res.data;
   } catch (error: any) {
     if (error.response?.status === 401) {
       throw new Error("Invalid credentials");
@@ -16,6 +16,6 @@ export const login = async (email: string, password: string) => {
 };
 
 export const logout = () => {
-  document.cookie = "token=; Max-Age=0; path=/";
+  localStorage.removeItem("token");
   window.location.href = "/login";
 };

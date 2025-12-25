@@ -3,7 +3,8 @@ uvicorn
 sqlalchemy
 pymysql
 python-jose
-passlib[bcrypt]
+passlib[bcrypt]==1.7.4
 cryptography
 python-dotenv
 pydantic[email]
+bcrypt==4.0.1
