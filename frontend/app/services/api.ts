@@ -24,7 +24,6 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       // clear cookie
       document.cookie = "token=; Max-Age=0; path=/";
-      window.location.href = "/login";
     }
     return Promise.reject(error);
   }

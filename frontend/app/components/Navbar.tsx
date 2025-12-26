@@ -4,23 +4,36 @@ import { Button } from "antd";
 import { LogoutOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useAuthStore } from "@/store/authStore";
 
 export default function Navbar() {
-  const logout = useAuthStore((state) => state.logout);
   const router = useRouter();
 
   const handleLogout = () => {
-    logout();
+    document.cookie = "token=; Max-Age=0; path=/";
     router.push("/login");
   };
-
   return (
-    <nav className="flex items-center justify-between px-6 py-4 bg-white border-b shadow-sm">
-      <div className="flex gap-4">
-        <Link href="/dashboard">Dashboard</Link>
-        <Link href="/dashboard/tasks">Tasks</Link>
-        <Link href="/profile">Profile</Link>
+    <nav
+      className="
+        sticky top-0 z-50
+        flex items-center justify-between
+        px-6 py-4
+        bg-white
+        border-b
+        shadow-sm
+      "
+    >
+      {/* Left */}
+      <div className="flex gap-6">
+        <Link href="/dashboard" className="hover:text-blue-600">
+          Dashboard
+        </Link>
+        <Link href="/dashboard/tasks" className="hover:text-blue-600">
+          Tasks
+        </Link>
+        <Link href="/profile" className="hover:text-blue-600">
+          Profile
+        </Link>
       </div>
 
       <h1

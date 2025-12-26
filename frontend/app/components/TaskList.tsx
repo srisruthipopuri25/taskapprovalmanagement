@@ -16,7 +16,7 @@ export default function TaskList() {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
-    api.get("/tasks").then((res) => setTasks(res.data));
+    api.get("/tasks/").then((res) => setTasks(res.data));
   }, []);
 
   // Filtering
