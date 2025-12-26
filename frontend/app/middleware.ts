@@ -4,8 +4,10 @@ export function middleware(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
   const { pathname } = req.nextUrl;
 
-  const isAuthPage = pathname.startsWith("/login") || pathname.startsWith("/register");
-  const isProtected = pathname.startsWith("/dashboard") || pathname.startsWith("/profile");
+  const isAuthPage =
+    pathname.startsWith("/login") || pathname.startsWith("/register");
+  const isProtected =
+    pathname.startsWith("/dashboard") || pathname.startsWith("/profile");
 
   if (!token && isProtected) {
     return NextResponse.redirect(new URL("/login", req.url));

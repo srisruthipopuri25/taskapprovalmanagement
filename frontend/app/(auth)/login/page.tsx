@@ -9,12 +9,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const router = useRouter();
 
-  useEffect(() => {
-    if (localStorage.getItem("token")) {
-      router.push("/dashboard");
-    }
-  }, []);
-
   const handleLogin = async () => {
     try {
       await login(email, password);

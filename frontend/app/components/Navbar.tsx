@@ -4,14 +4,16 @@ import { Button } from "antd";
 import { LogoutOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import api from "@/services/api";
 
 export default function Navbar() {
   const router = useRouter();
 
-  const handleLogout = () => {
-    document.cookie = "token=; Max-Age=0; path=/";
+  const handleLogout = async () => {
+    await api.post("/auth/logout");
     router.push("/login");
   };
+
   return (
     <nav
       className="
@@ -28,7 +30,7 @@ export default function Navbar() {
         <Link href="/dashboard" className="hover:text-blue-600">
           Dashboard
         </Link>
-        <Link href="/dashboard/tasks" className="hover:text-blue-600">
+        <Link href="/dashboard" className="hover:text-blue-600">
           Tasks
         </Link>
         <Link href="/profile" className="hover:text-blue-600">
