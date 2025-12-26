@@ -15,12 +15,13 @@ class TaskCreate(TaskBase):
     pass
 
 class TaskUpdate(BaseModel):
-    title: Optional[str]
-    description: Optional[str]
-    status: Optional[TaskStatus]
-    priority: Optional[TaskPriority]
-    due_date: Optional[date]
-    category_id: Optional[int]
+    title: Optional[str] = None
+    description: Optional[str] = None
+    status: Optional[TaskStatus] = None
+    priority: Optional[TaskPriority] = None
+    due_date: Optional[date] = None
+    category_id: Optional[int] = None
+
 
 class TaskResponse(TaskBase):
     id: int
