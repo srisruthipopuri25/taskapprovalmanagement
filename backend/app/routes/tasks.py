@@ -10,10 +10,13 @@ from app.auth.dependencies import get_current_user
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
 # Create task
-@router.post("/", response_model=TaskResponse)
-def create_task(task: TaskCreate, db: Session = Depends(get_db), user=Depends(get_current_user)):
-    task_data = task.model_dump(exclude_unset=True)
-    new_task = Task(**task_data, user_id=user.id)
+@router.post("/")
+def create_task(
+    task: TaskCreate,
+    db: Session = Depends(get_db),
+    user = Depends(get_current_user)
+):
+    new_task = Task(**task.model_dump(), user_id=user.id)
     db.add(new_task)
     db.commit()
     db.refresh(new_task)
@@ -41,15 +44,25 @@ def get_tasks(
     return query.all()
 
 # Update task
-@router.put("/{task_id}", response_model=TaskResponse)
-def update_task(task_id: int, task: TaskUpdate, db: Session = Depends(get_db), user=Depends(get_current_user)):
-    db_task = db.query(Task).filter(Task.id == task_id, Task.user_id == user.id).first()
+@router.put("/{task_id}")
+def update_task(
+    task_id: int,
+    task: TaskUpdate,
+    db: Session = Depends(get_db),
+    user = Depends(get_current_user)
+):
+    db_task = db.query(Task).filter(
+        Task.id == task_id,
+        Task.user_id == user.id   # 🔐 ownership enforced
+    ).first()
+
     if not db_task:
         raise HTTPException(status_code=404, detail="Task not found")
-    for key, value in task.model_dump(exclude_unset=True).items():
-        setattr(db_task, key, value)
+
+    for k, v in task.model_dump(exclude_unset=True).items():
+        setattr(db_task, k, v)
+
     db.commit()
-    db.refresh(db_task)
     return db_task
 
 # Delete task
