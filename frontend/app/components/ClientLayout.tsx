@@ -21,7 +21,7 @@ export default function ClientLayout({
       ?.split("=")[1];
 
     const isProtected =
-      pathname.startsWith("/dashboard") || pathname.startsWith("/profile");
+      pathname.startsWith("/dashboard") || pathname.startsWith("/profile") || pathname.startsWith("/tasks");
     if (!token && isProtected) {
       router.replace("/login");
     }
