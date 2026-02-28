@@ -1,16 +1,16 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from app.database import Base, engine
 from app.models.user import User
 from app.models.task import Task
 from app.models.category import Category
 from app.routes import auth, tasks, user, categories
 
-# Create FastAPI
 app = FastAPI()
 
-# cors
 origins = ["http://localhost:3000"]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -19,11 +19,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# models
-# Base.metadata.drop_all(bind=engine)  # ⚠ drops all tables
 Base.metadata.create_all(bind=engine)
 
-# routes
+
 app.include_router(auth.router)
 app.include_router(tasks.router)
 app.include_router(user.router)

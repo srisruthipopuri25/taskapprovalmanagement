@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import api from "@/services/api";
-import { Card, Select, Pagination, Tag, Button } from "antd";
+import { Card, Select, Pagination, Tag, Button, Popconfirm } from "antd";
 import _ from "lodash";
 import dayjs from "dayjs";
 
@@ -13,7 +13,7 @@ export default function TaskList() {
   const [categories, setCategories] = useState<any[]>([]);
   const [statusFilter, setStatusFilter] = useState<string>();
   const [priorityFilter, setPriorityFilter] = useState<string>();
-  const [categoryFilter, setCategoryFilter] = useState<string>();
+  const [categoryFilter, setCategoryFilter] = useState<number>();
   const [page, setPage] = useState(1);
 
   const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
@@ -56,6 +56,11 @@ export default function TaskList() {
     fetchTasks();
   };
 
+  const deleteTask = async (taskId: number) => {
+    await api.delete(`/tasks/${taskId}`);
+    fetchTasks();
+  };
+
   let filteredTasks = tasks;
 
   if (statusFilter) {
@@ -69,7 +74,7 @@ export default function TaskList() {
   if (categoryFilter) {
     filteredTasks = _.filter(
       filteredTasks,
-      (task) => task.category?.id === Number(categoryFilter)
+      (task) => task.category?.id === categoryFilter
     );
   }
 
@@ -100,10 +105,10 @@ export default function TaskList() {
       <div className="flex flex-wrap gap-4 mb-4">
         <Select
           allowClear
-          placeholder="Filter by Status"
-          className="w-52"
-          onChange={(value) => {
-            setStatusFilter(value);
+          placeholder="Status"
+          className="w-40"
+          onChange={(v) => {
+            setStatusFilter(v);
             setPage(1);
           }}
           options={[
@@ -115,10 +120,10 @@ export default function TaskList() {
 
         <Select
           allowClear
-          placeholder="Filter by Priority"
-          className="w-52"
-          onChange={(value) => {
-            setPriorityFilter(value);
+          placeholder="Priority"
+          className="w-40"
+          onChange={(v) => {
+            setPriorityFilter(v);
             setPage(1);
           }}
           options={[
@@ -130,10 +135,10 @@ export default function TaskList() {
 
         <Select
           allowClear
-          placeholder="Filter by Category"
-          className="w-52"
-          onChange={(value) => {
-            setCategoryFilter(value);
+          placeholder="Category"
+          className="w-40"
+          onChange={(v) => {
+            setCategoryFilter(v);
             setPage(1);
           }}
           options={categories.map((c) => ({
@@ -143,14 +148,13 @@ export default function TaskList() {
         />
       </div>
 
-      {/* Task List */}
       {paginatedTasks.map((task) => (
         <Card
           key={task.id}
-          className="mb-3 rounded-xl shadow-sm cursor-pointer"
+          className="mb-3 rounded-xl shadow-sm"
           onClick={() => startEdit(task)}
         >
-          <div className="flex justify-between items-start">
+          <div className="flex justify-between">
             <div>
               <h3 className="font-semibold text-lg">{task.title}</h3>
               {task.description && (
@@ -158,7 +162,10 @@ export default function TaskList() {
               )}
             </div>
 
-            <div className="flex flex-col gap-1 items-end">
+            <div
+              className="flex flex-col items-end gap-2"
+              onClick={(e) => e.stopPropagation()}
+            >
               {editingTaskId === task.id ? (
                 <>
                   <Select
@@ -183,7 +190,7 @@ export default function TaskList() {
                     }))}
                   />
 
-                  <div className="flex gap-2 mt-1">
+                  <div className="flex gap-2">
                     <Button size="small" type="primary" onClick={() => saveEdit(task.id)}>
                       Save
                     </Button>
@@ -194,39 +201,23 @@ export default function TaskList() {
                 </>
               ) : (
                 <>
-                  <Tag
-                    color={
-                      task.status === "Completed"
-                        ? "green"
-                        : task.status === "In Progress"
-                        ? "blue"
-                        : "orange"
-                    }
-                  >
-                    {task.status}
-                  </Tag>
-
-                  <Tag
-                    color={
-                      task.priority === "High"
-                        ? "red"
-                        : task.priority === "Medium"
-                        ? "blue"
-                        : "gray"
-                    }
-                  >
-                    {task.priority}
-                  </Tag>
-
+                  <Tag>{task.status}</Tag>
+                  <Tag>{task.priority}</Tag>
+                  {task.category?.name && <Tag color="purple">{task.category.name}</Tag>}
                   {task.due_date && (
                     <span className="text-xs text-gray-500">
                       {dayjs(task.due_date).format("DD/MM/YYYY")}
                     </span>
                   )}
 
-                  {task.category?.name && (
-                    <Tag color="purple">{task.category.name}</Tag>
-                  )}
+                  <Popconfirm
+                    title="Delete task?"
+                    onConfirm={() => deleteTask(task.id)}
+                  >
+                    <Button danger size="small">
+                      Delete
+                    </Button>
+                  </Popconfirm>
                 </>
               )}
             </div>
@@ -234,16 +225,14 @@ export default function TaskList() {
         </Card>
       ))}
 
-      {/* Pagination */}
-      <div className="flex justify-center mt-6">
-        <Pagination
-          current={page}
-          pageSize={PAGE_SIZE}
-          total={filteredTasks.length}
-          onChange={(p) => setPage(p)}
-          showSizeChanger={false}
-        />
-      </div>
+      <Pagination
+        className="mt-6 flex justify-center"
+        current={page}
+        pageSize={PAGE_SIZE}
+        total={filteredTasks.length}
+        onChange={setPage}
+        showSizeChanger={false}
+      />
     </div>
   );
 }

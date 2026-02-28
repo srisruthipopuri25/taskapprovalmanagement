@@ -17,7 +17,7 @@ export default function RegisterPage() {
         email: values.email,
         password: values.password,
       });
-      message.success("Registration successful! Please log in.");
+      console.log("Registration successful! Please log in.");
       router.push("/login");
     } catch (err: any) {
       console.error(err);
